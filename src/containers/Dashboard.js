@@ -98,22 +98,13 @@ export default class {
   };
 
   handleEditTicket(e, bill, bills) {
-    console.log(
-      "handleEditTicket",
-      this.editCounter,
-      bill.id,
-      this.id,
-      "this.editCounter % 2",
-      this.editCounter % 2
-    );
-
+    // Reset state if necessary
     if (this.editCounter === undefined || this.id !== bill.id) {this.editCounter = 0; console.log("editCounter reset to 0");}
     if (this.id === undefined || this.id !== bill.id) {this.id = bill.id; console.log("id reset to bill.id");}
 
     // Toggle the background color of the clicked bill
     if (this.editCounter % 2 === 0) {
-      console.log("OPEN = editCounter % 2 === 0", bill.id);
-      //|| this.editCounter > 0 //  || this.id === bill.id
+      // Open the bill
       bills.forEach((b) => {
         $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
       });
@@ -122,7 +113,7 @@ export default class {
       $(".vertical-navbar").css({ height: "150vh" });
       this.editCounter ++;
     } else {
-      console.log("CLOSE = editCounter % 2 !== 0", bill.id);
+      // Close the bill
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
       $(".dashboard-right-container div").html(`
@@ -134,34 +125,6 @@ export default class {
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
-
-    // console.log("handleEditTicket", this.id, bill.id, bill, bills);
-    // // Get the data-open attribute to check if the bill is already open
-    // const dataOpen = e.currentTarget.getAttribute("data-open");
-    // console.log("data-open:", dataOpen);
-    // if (dataOpen === "false" || dataOpen === null) {
-    //   // Always reset all bills to closed before toggling the clicked one
-    //   bills.forEach((b) => {
-    //     $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
-    //     $(`#open-bill${b.id}`).attr("data-open", false);
-    //   });
-    //   this.id = bill.id; // Set the id of the currently opened bill
-    //   $(`#open-bill${bill.id}`).css({ background: "#2A2B35" }); // Selected bill color
-    //   $(".dashboard-right-container div").html(DashboardFormUI(bill));
-    //   $(".vertical-navbar").css({ height: "150vh" });
-    //   e.currentTarget.setAttribute("data-open", true);
-    // } else {
-    //   // If already open, just close it and show the default view
-    //   $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
-    //   $(".dashboard-right-container div").html(`
-    //     <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
-    //   `);
-    //   $(".vertical-navbar").css({ height: "120vh" });
-    //   e.currentTarget.setAttribute("data-open", false);
-    // }
-    // $("#icon-eye-d").click(this.handleClickIconEye);
-    // $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
-    // $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -187,7 +150,7 @@ export default class {
   handleShowTickets(e, bills, index) {
     console.log("handleShowTickets", this.showCounter, index, bills);
 
-    // Initialise le state 
+    // Initialize state 
      if (!this.sectionsState) this.sectionsState = {}
 
      // Toggle state for the clicked section
@@ -205,7 +168,7 @@ export default class {
      }
 
      bills.forEach(bill => {
-       $(`#open-bill${bill.id}`).off('click') // 🔁 Évite les doublons
+       $(`#open-bill${bill.id}`).off('click') // Avoid multiple event listeners
        $(`#open-bill${bill.id}`).on('click', (e) => this.handleEditTicket(e, bill, bills))
      })
 
