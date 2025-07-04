@@ -113,8 +113,135 @@ describe("Given that I am a user on login page", () => {
 
     test("It should renders Bills page", () => {
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
-    });
+    });   
+    
+    // @TODO Catch error handling for login
   });
+});
+
+// Test for login error handling > line 40 & 62
+describe("Try login and catch login error handling", () => {
+
+  // As an employee should call createUser if login fails and then navigate to Bills // Line 40
+  test("As an employee should call createUser if login fails and then navigate to Bills", async () => {
+    document.body.innerHTML = LoginUI();
+
+    // Fill in employee login form
+    const inputEmailUser = screen.getByTestId("employee-email-input");
+    const inputPasswordUser = screen.getByTestId("employee-password-input");
+    fireEvent.change(inputEmailUser, { target: { value: "test@email.com" } });
+    fireEvent.change(inputPasswordUser, { target: { value: "password" } });
+
+    // Mock localStorage
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(() => null),
+      },
+      writable: true,
+    });
+
+    // Mock navigation
+    const onNavigate = jest.fn((pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    });
+
+    let PREVIOUS_LOCATION = "";
+
+    // Mock store
+    const store = jest.fn();
+
+    // Create Login instance
+    const login = new Login({
+      document,
+      localStorage: window.localStorage,
+      onNavigate,
+      PREVIOUS_LOCATION,
+      store,
+    });
+
+    // Mock login to reject (simulate error), and createUser to resolve
+    const user = {
+      type: "Employee",
+      email: "badtest@email.com",
+      password: "password",
+      status: "connected",
+    };
+    login.login = jest.fn().mockRejectedValue(new Error("login error"));
+    login.createUser = jest.fn().mockResolvedValue({});
+
+    const form = screen.getByTestId("form-employee");
+    const handleSubmit = jest.fn(login.handleSubmitEmployee);
+    login.login = jest.fn().mockResolvedValue({});
+    form.addEventListener("submit", handleSubmit);
+    fireEvent.submit(form);
+
+    expect(handleSubmit).toHaveBeenCalled();
+    expect(window.localStorage.setItem).toHaveBeenCalled();
+    expect(login.login).toHaveBeenCalledWith(user);
+    expect(login.createUser).toHaveBeenCalledWith(user);
+  });
+
+  // As admin should call createUser if login fails and then navigate to Bills // Line 62
+  test("As an admin should call createUser if login fails and then navigate to Bills", async () => {
+    document.body.innerHTML = LoginUI();
+
+    // Fill in employee login form
+    const inputEmailUser = screen.getByTestId("admin-email-input");
+    const inputPasswordUser = screen.getByTestId("admin-password-input");
+    fireEvent.change(inputEmailUser, { target: { value: "test@email.com" } });
+    fireEvent.change(inputPasswordUser, { target: { value: "password" } });
+
+    // Mock localStorage
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(() => null),
+      },
+      writable: true,
+    });
+
+    // Mock navigation
+    const onNavigate = jest.fn((pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    });
+
+    let PREVIOUS_LOCATION = "";
+
+    // Mock store
+    const store = jest.fn();
+
+    // Create Login instance
+    const login = new Login({
+      document,
+      localStorage: window.localStorage,
+      onNavigate,
+      PREVIOUS_LOCATION,
+      store,
+    });
+
+    // Mock login to reject (simulate error), and createUser to resolve
+    const user = {
+      type: "Admin",
+      email: "badtest@email.com",
+      password: "password",
+      status: "connected",
+    };
+    login.login = jest.fn().mockRejectedValue(new Error("login error"));
+    login.createUser = jest.fn().mockResolvedValue({});
+
+    const form = screen.getByTestId("form-admin");
+    const handleSubmit = jest.fn(login.handleSubmitAdmin);
+    login.login = jest.fn().mockResolvedValue({});
+    form.addEventListener("submit", handleSubmit);
+    fireEvent.submit(form);
+
+    expect(handleSubmit).toHaveBeenCalled();
+    expect(window.localStorage.setItem).toHaveBeenCalled();
+    expect(login.login).toHaveBeenCalledWith(user);
+    expect(login.createUser).toHaveBeenCalledWith(user);
+  });
+
 });
 
 describe("Given that I am a user on login page", () => {
