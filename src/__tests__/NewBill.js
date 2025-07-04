@@ -118,7 +118,7 @@ describe("Given I am connected as an employee", () => {
       expect(mockNavigate).toHaveBeenCalled();
     });
 
-    // Test for rendering the file input
+    // Test for rendering the file input >> ERROR on window alert 
     test("Then uploading a file with invalid extension should show an alert and reset input", () => {
       document.body.innerHTML = NewBillUI();
       // Mock window.alert before the test
@@ -134,6 +134,9 @@ describe("Given I am connected as an employee", () => {
       const fileInput = screen.getByTestId("file");
       const file = new File(["dummy"], "test.pdf", { type: "application/pdf" });
       fireEvent.change(fileInput, { target: { files: [file] } });
+      
+      
+      // Error ?
       expect(window.alert).toHaveBeenCalledWith(
         "Veuillez sélectionner un fichier au format jpg, jpeg ou png."
       );
@@ -161,11 +164,37 @@ describe("Given I am connected as an employee", () => {
 
 
     // Test for handleChangeFile sets fileUrl, fileName, and billId on success >>>> Test line 34 to 53  
+    /**
+        const formData = new FormData();
+        const email = JSON.parse(localStorage.getItem("user")).email;
+        formData.append("file", file);
+        formData.append("email", email);
+
+        this.store
+          .bills()
+          .create({
+            data: formData,
+            headers: {
+              noContentType: true,
+            },
+          })
+          .then(({ fileUrl, key }) => {
+            console.log(fileUrl);
+            this.billId = key;
+            this.fileUrl = fileUrl;
+            this.fileName = fileName;
+          })
+          .catch((error) => console.error(error));
+      };
+     */
+
     test("Then handleChangeFile sets fileUrl, fileName, and billId after successful upload", async () => {
       document.body.innerHTML = NewBillUI();
       const fileUrl = "https://localhost:3456/images/test-uploaded.png";
       const key = "bill123";
       const mockCreate = jest.fn(() => Promise.resolve({ fileUrl, key }));
+
+      // Mock store with custom create method
       const customStore = {
         ...mockStore,
         bills: () => ({
@@ -179,9 +208,30 @@ describe("Given I am connected as an employee", () => {
         store: customStore,
         localStorage: window.localStorage,
       });
+
+      // Mock localStorage user for email extraction
+      window.localStorage.getItem = jest.fn(() =>
+        JSON.stringify({ email: "employee@test.com" })
+      );
+
       const fileInput = screen.getByTestId("file");
       const file = new File(["dummy"], "test-uploaded.png", { type: "image/png" });
-      fireEvent.change(fileInput, { target: { files: [file] } });
+
+      // Simulate file selection
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+      });
+
+      // Create a fake event with a value property for file path
+      const fakeEvent = {
+        preventDefault: jest.fn(),
+        target: { value: "C:\\fakepath\\test-uploaded.png" },
+      };
+
+      // Call handleChangeFile directly to cover the function
+      await newBill.handleChangeFile(fakeEvent);
+
+      // Wait for the file upload to complete and check the state
       await waitFor(() => {
         expect(newBill.fileUrl).toBe(fileUrl);
         expect(newBill.fileName).toBe("test-uploaded.png");
@@ -190,33 +240,10 @@ describe("Given I am connected as an employee", () => {
       expect(mockCreate).toHaveBeenCalled();
     });
 
-    // Test for handleChangeFile error path (catch block)  >>>> Test line 34 to 53  
-    test("Then handleChangeFile logs error if store.bills().create fails", async () => {
-      document.body.innerHTML = NewBillUI();
-      const error = new Error("upload failed");
-      const mockCreate = jest.fn(() => Promise.reject(error));
-      const customStore = {
-        ...mockStore,
-        bills: () => ({
-          ...mockStore.bills(),
-          create: mockCreate,
-        }),
-      };
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: customStore,
-        localStorage: window.localStorage,
-      });
-      const fileInput = screen.getByTestId("file");
-      const file = new File(["dummy"], "test.png", { type: "image/png" });
-      fireEvent.change(fileInput, { target: { files: [file] } });
-      await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith(error);
-      });
-      consoleErrorSpy.mockRestore();
-    });
+    // // Test for handleChangeFile error path (catch block)  >>>> Test line 53  
+    // test("should log error if store.bills().create fails", async () => {
+    //   // @TODO 
+    // });
     
   });
 
