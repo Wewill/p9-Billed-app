@@ -4,3 +4,5 @@ https://copper-crayfish-128.notion.site/218d44e6faaa8082a144e4142987725e?v=218d4
 Git :
 https://github.com/Wewill/p9-Billed-app
 
+Rapport de tests : ci-joint
+Rapport de couverture : ci-joint
