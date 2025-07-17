@@ -84,8 +84,7 @@ export default class {
   }
 
   handleClickIconEye = () => {
-    console.log("handleClickIconEye", this.id);
-
+    // console.log("handleClickIconEye", this.id);
     const billUrl = $("#icon-eye-d").attr("data-bill-url");
     const imgWidth = Math.floor($("#modaleFileAdmin1").width() * 0.8);
     $("#modaleFileAdmin1")
@@ -99,8 +98,8 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
     // Reset state if necessary
-    if (this.editCounter === undefined || this.id !== bill.id) {this.editCounter = 0; console.log("editCounter reset to 0");}
-    if (this.id === undefined || this.id !== bill.id) {this.id = bill.id; console.log("id reset to bill.id");}
+    if (this.editCounter === undefined || this.id !== bill.id) {this.editCounter = 0; /*console.log("editCounter reset to 0");*/}
+    if (this.id === undefined || this.id !== bill.id) {this.id = bill.id; /*console.log("id reset to bill.id");*/}
 
     // Toggle the background color of the clicked bill
     if (this.editCounter % 2 === 0) {
@@ -148,7 +147,7 @@ export default class {
   };
 
   handleShowTickets(e, bills, index) {
-    console.log("handleShowTickets", this.showCounter, index, bills);
+    // console.log("handleShowTickets", this.showCounter, index, bills);
 
     // Initialize state 
      if (!this.sectionsState) this.sectionsState = {}
