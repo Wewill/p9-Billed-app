@@ -1,3 +1,18 @@
+# P9 Billed app
+# Front-end testing 
+
+A Jest project for OCR project 9.
+
+## Lancement
+
+    "back:start": "pnpm -F back run run:dev",
+    "front:start": "pnpm -F front start",
+    "front:test": "pnpm -F front run test",
+    "front:watch": "pnpm -F front run test:watch",
+    "front:coverage": "pnpm -F front run test:coverage"
+
+
+
 
 ## L'architecture du projet :
 Ce projet, dit frontend, est connecté à un service API backend que vous devez aussi lancer en local.
