@@ -40,7 +40,7 @@ export const card = (bill) => {
     <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${
     bill.id
   }'>
-  <code>${bill.id}</code>
+      <!-- <code>${bill.id}</code> -->
       <div class='bill-card-name-container'>
         <div class='bill-card-name'> ${firstName} ${lastName} </div>
         <span class='bill-card-grey'> ... </span>
