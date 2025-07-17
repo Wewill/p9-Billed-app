@@ -29,8 +29,8 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
+
       //to-do write expect expression
-      ////////a
       expect(windowIcon.classList.contains("active-icon")).toBe(true);
 
 
@@ -97,7 +97,7 @@ describe("Given I am connected as an employee", () => {
 
       expect(result[0].date).toBe("invalid-date");
       expect(logSpy).toHaveBeenCalled();
-      expect(logSpy).toHaveBeenCalledWith('length', 1);
+      expect(logSpy).toHaveBeenCalledWith('Bill length', 1);
 
       logSpy.mockRestore();
     });

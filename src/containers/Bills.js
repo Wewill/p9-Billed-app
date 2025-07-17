@@ -39,6 +39,7 @@ export default class {
               return {
                 ...doc,
                 date: formatDate(doc.date),
+                // timestamp: doc.date,
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -48,11 +49,12 @@ export default class {
               return {
                 ...doc,
                 date: doc.date,
+                // timestamp: doc.date,
                 status: formatStatus(doc.status)
               }
             }
           })
-          // console.log('length', bills.length)
+          console.log('Bill length', bills.length); // Log the length of the bills array to jest test
         return bills
       })
     }

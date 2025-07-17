@@ -22,7 +22,8 @@ const row = (bill) => {
 const rows = (data) => {
   // Sort bills by date ordered from earliest to latest
   if (Array.isArray(data)) {
-    data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    data.sort((a, b) => new Date(b.date) - new Date(a.date)); // Use date for jest
+    //data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Use timestamp for front
     return data.length ? data.map((bill) => row(bill)).join("") : "";
   }
   return "";
